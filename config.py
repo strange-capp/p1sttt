@@ -1,6 +1,6 @@
 import os
 
-UPLOAD_FOLDER = os.getcwd() + '/app/static/users_images'
+UPLOAD_FOLDER = os.getcwd() + '/static/users_images'
 
 
 class Config:
