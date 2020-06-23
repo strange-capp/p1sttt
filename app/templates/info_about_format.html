@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Info About Formats</title>
+</head>
+<body>
+{% include 'base.html' %}
+<h1>Choose format</h1>
+<ul>
+    {% for extension in extensions %}
+    <li><a href="{{ url_for('info_about_format.show') + '?format='+ extension }}">{{extension}}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>

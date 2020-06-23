@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Info About Image</title>
+</head>
+<body>
+{% include 'base.html' %}
+<h1>Upload your image to get information about it!</h1>
+<p>The File must have one of the following extensions: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">{{ ext }}</a> {% endfor %}</p>
+<form  action="{{ url_for('info_about_image.show_info') }}" method="POST" enctype="multipart/form-data">
+    <input name='image' type="file">
+    <input type="submit">
+</form>
+</body>
+</html>

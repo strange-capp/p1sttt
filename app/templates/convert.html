@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Convert</title>
+    <link href="{{ url_for('static', filename='album.css') }}" rel="stylesheet">
+</head>
+<body>
+{% include 'base.html' %}
+<section class="jumbotron text-center">
+    <div class="container">
+      <h1>Выбери формат!</h1>
+        <p class="lead text-muted">На этой странице ты можешь выбрать формат в который хочешь конвертировать свое изображениe</p>
+      </p>
+    </div>
+  </section>
+  <div class="album py-5 bg-light">
+    <div class="container">
+
+      <div class="row">
+          {% for extension in extensions %}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>{{ extension }}</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ extension }}</text></svg>
+            <div class="card-body">
+              <p class="card-text"></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a type="button" class="btn btn-sm btn-primary" href="{{ url_for('convert.choose_file') + '?extension='+ '.' + extension.lower() }}" role="button">Конвертировать в {{ extension }}!</a>
+                </div>
+                <small class="text-muted"></small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+          <a href="/" class="btn btn-primary my-2">На главную</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

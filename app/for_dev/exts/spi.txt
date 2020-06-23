@@ -1,0 +1,7 @@
+.gif
+.im
+.tiff
+.webp
+.spi
+.xbm
+.pdf

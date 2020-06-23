@@ -1,0 +1,14 @@
+.bmp
+.dib
+.gif
+.ico
+.im
+.png
+.ppm
+.sgi
+.tga
+.tiff
+.webp
+.spi
+.xbm
+.pdf

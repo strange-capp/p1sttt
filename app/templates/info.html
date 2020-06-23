@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Info About Image</title>
+</head>
+<body>
+{% include 'base.html' %}
+<h1>I am so disgusting</h1>
+<p>Image name: {{ name }}</p>
+<p>Image mod: {{ mode }}</p>
+<p>Image width: {{ width }}</p>
+<p>Image height: {{ height }}</p>
+<p>Image format: <a href="{{ url_for('info_about_format.show') + '?format=' + image_format }}">{{ image_format }}</a></p>
+<p>Image size: {{ size }}</p>
+</body>
+</html>

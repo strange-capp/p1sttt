@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bad Extension</title>
+</head>
+<body>
+{% include 'base.html' %}
+<p>
+{{ bad.upper().replace('.', '') }} is not suitable, image have to be with following extension: {% for ext in good %} .{{ ext }} {% endfor %}
+</p>
+</body>
+</html>
