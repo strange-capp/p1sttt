@@ -44,10 +44,13 @@ def show_info():
     if format.lower() not in suitable:
         return render_template('404.html'), 404
 
+    if format == '':
+        return render_template('info.html', extension=format, suitable=suitable)
+
     if format.lower() not in suitable:
         return render_template('bad_extension.html', bad=format, good=[ext.replace('.', '') for ext in suitable])
     
-    filepath = os.path.join(current_app.config.get('UPLOAD_FOLDER'), filename)
+    filepath = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/users_images/') + filename
     
     file.save(filepath)
     file.close()

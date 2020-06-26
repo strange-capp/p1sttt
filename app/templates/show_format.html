@@ -8,5 +8,7 @@
 {% include 'base.html' %}
 <h1>Here is {{ format }}</h1>
 <p>{{ text }}</p>
+<a href="{{ url_for('convert.choose_file') + '?extension='+ '.' + format.lower() }}">Конвертировать в {{ format }}</a>
+<p align="right"><a href="/" class="btn btn-primary my-2">На главную</a></p>
 </body>
 </html>

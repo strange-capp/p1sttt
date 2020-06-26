@@ -1,11 +1,12 @@
 from . import convert
-from flask import render_template, request, url_for, current_app, send_file
+from flask import render_template, request, url_for, current_app, send_file, redirect
 from werkzeug.utils import secure_filename
 from ..pil_utils import pil_demo
 import os
 from ..for_dev.all_exts import all_to, what_can
 import time
 from .. import scheduler
+
 
 
 full = [key.upper() for key in all_to]
@@ -19,13 +20,13 @@ def delete_file(*filenames):
     :return: None
     """
     # sleep
-    time.sleep(1800)
+    time.sleep(10)
 
 
     # then delete all files
     for filename in filenames:
-        os.remove(os.getcwd()+'/app/static/'+filename)
-        print(os.getcwd()+'/app/static/'+filename, 'is deleted')
+        os.remove(filename)
+        print(filename, 'is deleted')
 
 
 @convert.route('/')
@@ -55,23 +56,26 @@ def choose_file():
         filename = secure_filename(file.filename)
         name, format = os.path.splitext(filename)
 
+        if format == '':
+            return render_template('uploading.html', extension=extension, suitable=suitable)
+
         if format.lower().replace('.', '') not in suitable:
             return render_template('bad_extension.html', bad=format, good=suitable)
 
-        file.save(os.path.join(current_app.config.get('UPLOAD_FOLDER'), filename))
-        file.close()
+        to_save = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/users_images/')
+        to_work = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/reformated/')
 
-        new_file = pil_demo.change_format('./app/static/users_images/' + filename, extension)
+        file.save(os.path.join(to_save, filename))
 
-        filename_1 = 'reformated/' + new_file
+        new_file = pil_demo.change_format(to_save + filename, extension)
 
-        filename_2 = 'users_images/' + name + format
+        filename_1 = to_work + new_file
+
+        filename_2 = to_save + name + format
 
         scheduler.add_job(func=delete_file, trigger='date', args=[filename_1, filename_2], id=filename)
 
-        print(scheduler.get_jobs())
-
-        return render_template('downloading.html', file=url_for('static', filename=filename_1))
+        return render_template('downloading.html', file=url_for('static', filename='reformated/' + new_file))
 
     extension = request.args.get('extension')
     suitable = what_can(extension)
@@ -85,3 +89,4 @@ def send_image(filename):
     This function just sends file
     """
     send_file(filename)
+

@@ -1,6 +1,7 @@
 from PIL import Image
 import os
 from ..pil_utils.pil_demo import change_size
+from flask import current_app
 
 
 
@@ -28,7 +29,7 @@ def gif(speed, user_images, name=None):
         image = Image.open(file).convert('RGB')
         images.append(image)
 
-    sub_dir = './app/static/reformated/'
+    sub_dir = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/reformated/')
     fullname = sub_dir + basename + '.gif'
     images[0].save(fullname, save_all=True, append_images=images[1:], optimize=False, duration=speed, loop=0)
 

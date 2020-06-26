@@ -6,11 +6,16 @@
 </head>
 <body>
 {% include 'base.html' %}
-<h1>Upload your image to get information about it!</h1>
-<p>The File must have one of the following extensions: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">{{ ext }}</a> {% endfor %}</p>
+<div class="container">
+<h1>Загрузи изображение чтобы получить информацию о нем!</h1>
+<p>Файл должен иметь одно из слудующих расширений: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">{{ ext }}</a> {% endfor %}</p>
 <form  action="{{ url_for('info_about_image.show_info') }}" method="POST" enctype="multipart/form-data">
-    <input name='image' type="file">
-    <input type="submit">
+    <div class="file-upload-wrapper">
+        <input name='image' class="file-upload" type="file">
+        <input type="submit">
+    </div>
 </form>
+    <p align="right"><a href="/" class="btn btn-primary my-2">На главную</a></p>
+</div>
 </body>
 </html>

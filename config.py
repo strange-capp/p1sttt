@@ -8,9 +8,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
     UPLOAD_FOLDER = UPLOAD_FOLDER
-    CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    # CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    # CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
     SSL_REDIRECT = True if os.environ.get('DYNO') else False
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     @staticmethod
     def init_app(app):

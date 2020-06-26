@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <title>Bad Extension</title>
 </head>
-<body>
 {% include 'base.html' %}
+<div class="container">
+<body>
 <p>
-{{ bad.upper().replace('.', '') }} is not suitable, image have to be with following extension: {% for ext in good %} .{{ ext }} {% endfor %}
+    {{ bad.upper().replace('.', '') }} не поддерживаемый формат изображение должны иметь одно из следующих расширений: {% for ext in good %}
+    <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}"> {{ ext }}</a>
+    {% endfor %}
 </p>
+</div>
 </body>
 </html>

@@ -6,12 +6,15 @@
 </head>
 <body>
 {% include 'base.html' %}
-<h1>I am so disgusting</h1>
-<p>Image name: {{ name }}</p>
-<p>Image mod: {{ mode }}</p>
-<p>Image width: {{ width }}</p>
-<p>Image height: {{ height }}</p>
-<p>Image format: <a href="{{ url_for('info_about_format.show') + '?format=' + image_format }}">{{ image_format }}</a></p>
-<p>Image size: {{ size }}</p>
+<div class="container">
+<h1>Вот твои характеристики:</h1>
+<p>Имя: {{ name }}</p>
+<p>Режим: {{ mode }}</p>
+<p>Ширина: {{ width }}</p>
+<p>Высота: {{ height }}</p>
+<p>Формат: <a href="{{ url_for('info_about_format.show') + '?format=' + image_format }}">{{ image_format }}</a></p>
+<p>Размер: {{ size }}</p>
+<p align="right"><a href="/" class="btn btn-primary my-2">На главную</a></p>
+</div>
 </body>
 </html>

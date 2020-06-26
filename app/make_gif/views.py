@@ -62,7 +62,7 @@ def making():
             if format.lower().replace('.', '') not in suitable:
                 return render_template('bad_extension.html', bad=filename + ' ' + format, good=suitable)
 
-            pathname = os.path.join(current_app.config.get('UPLOAD_FOLDER'), filename)
+            pathname = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/users_images/') + filename
 
             file.save(pathname)
             file.close()

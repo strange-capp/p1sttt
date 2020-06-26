@@ -1,6 +1,6 @@
 from PIL import Image
 import os
-import random
+from flask import current_app
 
 
 
@@ -15,10 +15,9 @@ def change_format(old, to_format, new_name=None):
     if new_name:
         base_name = new_name
 
-
-    sub_dir = './app/static/reformated/'
+    sub_dir = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/reformated')
     base_name += to_format
-    new_photo = sub_dir + base_name
+    new_photo = sub_dir + '/' + base_name
 
     # check how to convert
     if to_format == '.xbm':
@@ -49,7 +48,7 @@ def change_size(old, width=None, height=None, to_format=None, new_name=None):
     new_height = height or int((float(img.size[1]) * float(wpercent)))
     img = img.resize((basewidth, new_height), Image.ANTIALIAS)
 
-    sub_dir = './app/static/reformated/'
+    sub_dir = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/reformated/')
     basename += format
     new_photo = sub_dir + basename
 
