@@ -4,12 +4,12 @@ from werkzeug.utils import secure_filename
 import os
 from ..for_dev.all_exts import what_can
 from ..pil_utils.make_gif import gif
-from ..pil_utils.pil_demo import change_size
-from PIL import Image
 from .. import scheduler
 import time
+from ..models import Record
+from .. import db, images
 
-def delete_file(filenames_users, reformated):
+def delete_file(file_ids):
     """
     This function remove all files in 'filenames'
     :param filenames:
@@ -17,15 +17,10 @@ def delete_file(filenames_users, reformated):
     """
     time.sleep(1800)
 
-    for filename in filenames_users:
-        os.remove(os.getcwd()+'/app/static/users_images/'+filename)
-        print(os.getcwd()+'/app/static/users_images/'+filename, 'is deleted')
-
-
-    for filename in reformated:
-        os.remove(os.getcwd() + '/app/static/reformated/' + filename)
-        print(os.getcwd() + '/app/static/reformated/' + filename, 'is deleted')
-        
+    for file_id in file_ids:
+        filename = Record.query.filter_by(id=file_id).first().image_filename
+        os.remove(os.path.join(current_app.config['SUB_DIR'], filename))
+        print(filename, 'is deleted')
         
 @make_gif.route('/', methods=['GET'])
 def index():
@@ -46,33 +41,32 @@ def making():
     """
     if request.method == 'POST':
         files = request.files.getlist('test-file[]')
-        print(files)
+
         all_files = []
-        to_delete = []
 
         for file in files:
             filename = secure_filename(file.filename)
-
-            to_delete.append(filename)
-
-            name, format = os.path.splitext(filename)
+            name, image_format = os.path.splitext(filename)
 
             suitable = what_can('.gif')
 
-            if format.lower().replace('.', '') not in suitable:
-                return render_template('bad_extension.html', bad=filename + ' ' + format, good=suitable)
+            if image_format == '':
+                return render_template('uploading.html', extension=image_format, suitable=suitable)
 
-            pathname = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/users_images/') + filename
+            if image_format.lower().replace('.', '') not in suitable:
+                return render_template('bad_extension.html', bad=image_format, good=suitable)
 
-            file.save(pathname)
-            file.close()
+            filename = images.save(file)
+            url = images.url(filename)
+            new_record = Record(filename, url)
+            db.session.add(new_record)
+            db.session.commit()
 
-            width, height = Image.open(pathname).size
-
-            pathname = change_size(pathname, width=width, height=height)
-
-            all_files.append(pathname)
+            all_files.append(new_record.id)
         gifka = gif(500, all_files)
-        filename = 'reformated/' + os.path.basename(gifka)
-        scheduler.add_job(func=delete_file, trigger='date', args=[to_delete, to_delete+[os.path.basename(gifka)]], id=filename)
-        return render_template('downloading.html', file=url_for('static', filename=filename))
+
+        new_file = Record.query.filter_by(id=gifka).first()
+
+        scheduler.add_job(func=delete_file, trigger='date', args=[all_files+[new_file.id]], id=str(new_file.id))
+
+        return render_template('downloading.html', file=new_file.image_url)
