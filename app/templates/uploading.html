@@ -7,16 +7,13 @@
 <body>
 {% include 'base.html' %}
 <div class="container">
-<h1>Заггрузи свое изображение чтобы сделать его <a href="{{ url_for('info_about_format.show') + '/?format=' + extension.upper() }}">{{ extension.upper().replace('.', '') }}</a></h1>
-<p>Файл должен иметь одно из слудующих расширений: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">.{{ ext }}</a> {% endfor %}</p>
-<form  action="{{ url_for('convert.choose_file') }}" method="POST" enctype="multipart/form-data">
-    <div class="file-upload-wrapper">
-        <input type="hidden" name="extension" value="{{ extension }}">
-        <input type="file" id="input-file-now" class="file-upload" name="image"/>
-    </div>
-    <input type="submit">
-</form>
-    <p align="right"><a href="/" class="btn btn-primary my-2">На главную</a></p>
+<h1>Загрузи свое изображение чтобы сделать его <a href="{{ url_for('info_about_format.show') + '/?format=' + extension.upper() }}">{{ extension.upper().replace('.', '') }}</a></h1>
+<p>Файл должен иметь одно из следующих расширений: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">.{{ ext }}</a> {% endfor %}</p>
+<form class="btn btn-secondarymy-2" action="{{ url_for('make_gif.making') }}" method="POST" enctype="multipart/form-data">
+        <input   class="btn btn-primary my-2" type="file" name="image"/>
+        <input class="btn btn-primary my-2" type="submit" />
+    </form>
+    <p align="right"><a href="/">На главную</a></p>
 </div>
 </body>
 </html>
