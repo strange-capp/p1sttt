@@ -6,10 +6,10 @@
 <body>
 {% include 'base.html' %}
 <div class="container">
-<h1>Загрузи нескоклько изображени чтобы сделать <a href="{{ url_for('info_about_format.show') + '/?format=GIF' }}">гифку</a></h1>
+<h1>Загрузи несколько изображений чтобы сделать <a href="{{ url_for('info_about_format.show') + '/?format=GIF' }}">гифку</a></h1>
 <p>Файлы должены быть со следующими расширениями\: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">.{{ ext }}</a> {% endfor %}</p>
-    <form   class="btn btn-secondarymy-2" action="{{ url_for('make_gif.making') }}" method="POST" enctype="multipart/form-data">
-        <input   class="btn btn-primary my-2" type="file" name="test-file[]" multiple />
+    <form   class="btn btn-secondarymy-2 container" action="{{ url_for('make_gif.making') }}" method="POST" enctype="multipart/form-data">
+        <input   class="btn btn-primary my-2 container" type="file" name="test-file[]" multiple />
         <input class="btn btn-primary my-2" type="submit" />
     </form>
     <p align="right"><a href="/">На главную</a></p>

@@ -62,8 +62,7 @@ def show_info():
 
     filepath = os.path.join(current_app.config.get('SUB_DIR'), filename)
 
-    with current_app.app_context():
-        scheduler.add_job(func=delete_file, trigger='date', args=[new_record.id], id=str(new_record.id))
+    scheduler.add_job(func=delete_file, trigger='date', args=[new_record.id], id=str(new_record.id))
     
     image = Image.open(filepath)
     

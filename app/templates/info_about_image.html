@@ -9,8 +9,8 @@
 <div class="container">
 <h1>Загрузи изображение чтобы получить информацию о нем!</h1>
 <p>Файл должен иметь одно из следующих расширений: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">{{ ext }}</a> {% endfor %}</p>
-<form class="btn btn-secondarymy-2" action="{{ url_for('make_gif.making') }}" method="POST" enctype="multipart/form-data">
-        <input   class="btn btn-primary my-2" type="file" name="image"/>
+<form class="btn btn-secondarymy-2 container" action="{{ url_for('info_about_image.show_info') }}" method="POST" enctype="multipart/form-data">
+        <input   class="btn btn-primary my-2 container" type="file" name="image"/>
         <input class="btn btn-primary my-2" type="submit" />
     </form>
     <p align="right"><a href="/">На главную</a></p>

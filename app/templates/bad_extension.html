@@ -8,7 +8,7 @@
 <div class="container">
 <body>
 <p>
-    {{ bad.upper().replace('.', '') }} не поддерживаемый формат изображение должны иметь одно из следующих расширений: {% for ext in good %}
+    {{ bad.upper().replace('.', '') }} не поддерживаемый формат, изображения должны иметь одно из следующих расширений: {% for ext in good %}
     <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}"> {{ ext }}</a>
     {% endfor %}
 </p>
