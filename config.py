@@ -1,17 +1,23 @@
 import os
 
-UPLOAD_FOLDER = os.getcwd() + '/static/users_images'
-
-
 class Config:
-    SECRET_KEY = 'ipidoras'
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+                              'sqlite:///' + os.path.join(BASE_DIR, 'data.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    UPLOADS_DEFAULT_DEST = os.path.join(BASE_DIR, 'app/static/photos/')
+
+    UPLOADED_IMAGES_DEST = os.path.join(BASE_DIR, 'app/static/photos/')
+
+    SUB_DIR = os.path.join(BASE_DIR, 'app/static/photos')
+
+    SECRET_KEY = 'sddkgfbkdsjnjkdjdsjek'
+
     SQLALCHEMY_RECORD_QUERIES = True
-    UPLOAD_FOLDER = UPLOAD_FOLDER
-    # CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    # CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
     SSL_REDIRECT = True if os.environ.get('DYNO') else False
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     @staticmethod
     def init_app(app):

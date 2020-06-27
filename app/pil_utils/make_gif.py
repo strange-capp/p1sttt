@@ -2,19 +2,28 @@ from PIL import Image
 import os
 from ..pil_utils.pil_demo import change_size
 from flask import current_app
+from ..models import Record
+from flask import url_for
+from .. import db
 
 
 
 
 def gif(speed, user_images, name=None):
 
-    basename, format = os.path.splitext(os.path.basename(user_images[0]))
+    rec = Record.query.filter_by(id=user_images[0]).first()
+    imagename = rec.image_filename
+    imagedir = os.path.join(current_app.config['UPLOADED_IMAGES_DEST'], imagename)
+
+    basename, format = os.path.splitext(imagename)
 
     if name:
         basename = name
 
     resized = []
-    main_image = Image.open(user_images[0])
+
+    main_image = Image.open(imagedir)
+
     gif_size = main_image.size
 
     for image in user_images:
@@ -23,17 +32,26 @@ def gif(speed, user_images, name=None):
 
     images = []
 
-    images.append(main_image)
-    for file in resized:
+    images.append(main_image.convert('RGB'))
 
-        image = Image.open(file).convert('RGB')
+    for file in resized:
+        rec = Record.query.filter_by(id=file).first()
+        imagename = rec.image_filename
+        imagedir = os.path.join(current_app.config['UPLOADED_IMAGES_DEST'], imagename)
+        image = Image.open(imagedir).convert('RGB')
         images.append(image)
 
-    sub_dir = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/reformated/')
-    fullname = sub_dir + basename + '.gif'
+    sub_dir = current_app.config.get('SUB_DIR')
+    fullname = os.path.join(sub_dir, basename + '.gif')
+
+
     images[0].save(fullname, save_all=True, append_images=images[1:], optimize=False, duration=speed, loop=0)
 
-    return fullname
+    new_record = Record(basename + '.gif', url_for('static', filename='photos/' + basename + '.gif', _external=True))
+    db.session.add(new_record)
+    db.session.commit()
+
+    return new_record.id
 
 
 

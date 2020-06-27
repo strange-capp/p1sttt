@@ -6,6 +6,8 @@ import os
 from ..for_dev.all_exts import all_to, what_can
 import time
 from .. import scheduler
+from .. import images, db
+from ..models import Record
 
 
 
@@ -13,19 +15,23 @@ full = [key.upper() for key in all_to]
 full.remove('ICNS')
 
 
-def delete_file(*filenames):
+def delete_file(*file_id):
     """
     This function remove all files in 'filenames'
     :param filenames:
     :return: None
     """
+    sub_dir = current_app.config.get('SUB_DIR')
+
     # sleep
-    time.sleep(10)
+    time.sleep(1800)
 
 
     # then delete all files
-    for filename in filenames:
-        os.remove(filename)
+    for id in file_id:
+        record = Record.query.filter_by(id=id).first()
+        filename = record.image_filename
+        os.remove(os.path.join(sub_dir, filename))
         print(filename, 'is deleted')
 
 
@@ -54,33 +60,31 @@ def choose_file():
 
         file = request.files['image']
         filename = secure_filename(file.filename)
-        name, format = os.path.splitext(filename)
+        name, image_format = os.path.splitext(filename)
 
-        if format == '':
-            return render_template('uploading.html', extension=extension, suitable=suitable)
+        if image_format == '':
+            return render_template('uploading.html', extension=image_format, suitable=suitable)
 
-        if format.lower().replace('.', '') not in suitable:
-            return render_template('bad_extension.html', bad=format, good=suitable)
+        if image_format.lower().replace('.', '') not in suitable:
+            return render_template('bad_extension.html', bad=image_format, good=suitable)
 
-        to_save = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/users_images/')
-        to_work = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/reformated/')
+        filename = images.save(request.files['image'])
+        url = images.url(filename)
+        new_record = Record(filename, url)
+        db.session.add(new_record)
+        db.session.commit()
 
-        file.save(os.path.join(to_save, filename))
+        new_file = pil_demo.change_format(new_record.id, extension)
+        new_file = Record.query.filter_by(id=new_file).first()
 
-        new_file = pil_demo.change_format(to_save + filename, extension)
+        with current_app.app_context():
+            scheduler.add_job(func=delete_file, trigger='date', args=[new_record.id, new_file.id], id=str(new_record.id))
 
-        filename_1 = to_work + new_file
-
-        filename_2 = to_save + name + format
-
-        scheduler.add_job(func=delete_file, trigger='date', args=[filename_1, filename_2], id=filename)
-
-        return render_template('downloading.html', file=url_for('static', filename='reformated/' + new_file))
+        return render_template('downloading.html', file=new_file.image_url)
 
     extension = request.args.get('extension')
     suitable = what_can(extension)
     return render_template('uploading.html', extension=extension, suitable=suitable)
-
 
 
 @convert.route('/send_image/<filename>', methods=['GET'])

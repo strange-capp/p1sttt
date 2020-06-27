@@ -6,24 +6,28 @@ import os
 from PIL import Image
 from .. import scheduler
 import time
+from .. import db, images
+from ..models import Record
 
 suitable = ["." + ext.lower() for ext in all_to]
 
 
-def delete_file(*filenames):
+def delete_file(*file_ids):
     """
     This function remove all files in 'filenames'
     :param filenames:
     :return: None
     """
     # sleep
-    time.sleep(1800)
+    time.sleep(10)
 
 
     # then delete all files
-    for filename in filenames:
-        os.remove(os.getcwd()+'/app/static/users_images/'+filename)
-        print(os.getcwd()+'/app/static/users_images/'+filename, 'is deleted')
+    for file_id in file_ids:
+        record = Record.query.filter_by(id=file_id).first()
+        filename = record.image_filename
+        os.remove(os.path.join(current_app.config['SUB_DIR'], filename))
+        print(filename, 'is deleted')
 
 
 @info_about_image.route('/', methods=['GET'])
@@ -49,11 +53,17 @@ def show_info():
 
     if format.lower() not in suitable:
         return render_template('bad_extension.html', bad=format, good=[ext.replace('.', '') for ext in suitable])
-    
-    filepath = os.path.join(current_app.config.get('BASE_DIR'), 'p1sttt/app/static/users_images/') + filename
-    
-    file.save(filepath)
-    file.close()
+
+    filename = images.save(request.files['image'])
+    url = images.url(filename)
+    new_record = Record(filename, url)
+    db.session.add(new_record)
+    db.session.commit()
+
+    filepath = os.path.join(current_app.config.get('SUB_DIR'), filename)
+
+    with current_app.app_context():
+        scheduler.add_job(func=delete_file, trigger='date', args=[new_record.id], id=str(new_record.id))
     
     image = Image.open(filepath)
     
@@ -63,9 +73,6 @@ def show_info():
     height = image.height
     image_format = image.format
     size = os.path.getsize(filepath)
-
-    scheduler.add_job(func=delete_file, trigger='date', args=[filename], id=filename)
-    
 
     return render_template('info.html', name=name, mode=mode,
                            width=width, height=height,

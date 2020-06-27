@@ -1,14 +1,25 @@
 from flask import Flask
 from config import config
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask_sqlalchemy import SQLAlchemy
+from flask_uploads import UploadSet, configure_uploads
 
 scheduler = BackgroundScheduler(daemon=True)
 scheduler.start()
+
+db = SQLAlchemy()
+
+images = UploadSet('images')
 
 def create_all(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+
+    db.init_app(app)
+
+    configure_uploads(app, images)
+
 
     if app.config['SSL_REDIRECT']:
         from flask_sslify import SSLify

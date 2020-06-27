@@ -5,11 +5,13 @@
 </head>
 <body>
 {% include 'base.html' %}
+<div class="container">
 <h1>Upload few images to make it Animation <a href="{{ url_for('info_about_format.show') + '/?format=GIF' }}">Gif</a></h1>
 <p>Files must have one of the following extensions: {% for ext in suitable %} <a href="{{ url_for('info_about_format.show') + '/?format=' + ext.upper() }}">.{{ ext }}</a> {% endfor %}</p>
     <form  action="{{ url_for('make_gif.making') }}" method="POST" enctype="multipart/form-data">
         <input type="file" id="file" name="test-file[]" multiple />
         <input type="submit" id="send" value="send via iframe!" />
     </form>
+</div>
 </body>
 </html>
