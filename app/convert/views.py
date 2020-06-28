@@ -21,7 +21,6 @@ def delete_file(*file_id):
     :param filenames:
     :return: None
     """
-    sub_dir = current_app.config.get('SUB_DIR')
 
     # sleep
     time.sleep(1800)
@@ -29,6 +28,8 @@ def delete_file(*file_id):
 
     # then delete all files
     for id in file_id:
+        with current_app.app_context():
+            sub_dir = current_app.config.get('SUB_DIR')
         record = Record.query.filter_by(id=id).first()
         filename = record.image_filename
         os.remove(os.path.join(sub_dir, filename))
@@ -77,8 +78,7 @@ def choose_file():
         new_file = pil_demo.change_format(new_record.id, extension)
         new_file = Record.query.filter_by(id=new_file).first()
 
-        with current_app.app_context():
-            scheduler.add_job(func=delete_file, trigger='date', args=[new_record.id, new_file.id], id=str(new_record.id))
+        scheduler.add_job(func=delete_file, trigger='date', args=[new_record.id, new_file.id], id=str(new_record.id))
 
         return render_template('downloading.html', file=new_file.image_url)
 

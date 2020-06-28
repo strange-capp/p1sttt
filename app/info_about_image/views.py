@@ -24,9 +24,11 @@ def delete_file(*file_ids):
 
     # then delete all files
     for file_id in file_ids:
+        with current_app.app_context():
+            sub_dir = current_app.config.get('SUB_DIR')
         record = Record.query.filter_by(id=file_id).first()
         filename = record.image_filename
-        os.remove(os.path.join(current_app.config['SUB_DIR'], filename))
+        os.remove(os.path.join(sub_dir, filename))
         print(filename, 'is deleted')
 
 
